@@ -1,0 +1,23 @@
+{
+  "name": "docpress-search",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rico Sta. Cruz <rico@ricostacruz.com>",
+  "license": "MIT",
+  "dependencies": {
+    "lunr": "0.5.12"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/docpress/docpress-search.git"
+  },
+  "bugs": {
+    "url": "https://github.com/docpress/docpress-search/issues"
+  },
+  "homepage": "https://github.com/docpress/docpress-search#readme",
+  "description": ""
+}
