@@ -15,11 +15,11 @@ describe('fixture', function () {
   })
 
   it('appends searchIndex metadata to docpress.json', function () {
-    expect(this.files['docpress.json'].searchIndex).toExist()
+    expect(this.files['_docpress.json'].searchIndex).toExist()
   })
 
   it('writes searchIndex into docpress.json as well', function () {
-    expect(JSON.parse(fx.read('_docpress/docpress.json')).searchIndex).toExist()
+    expect(JSON.parse(fx.read('_docpress/_docpress.json')).searchIndex).toExist()
   })
 
   it('creates search.js', function () {

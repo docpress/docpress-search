@@ -11,7 +11,7 @@ module.exports = function search () {
       if (file.$) index(fname, file, idx)
     })
 
-    extendIndex(files['docpress.json'], (file) => {
+    extendIndex(files['_docpress.json'], (file) => {
       file.searchIndex = idx
     })
 
@@ -71,6 +71,6 @@ function buildJs (done) {
   const browserify = require('browserify')
   const b = browserify()
   b.add(fname)
-  b.transform({ global: true }, 'uglifyify')
+  b.transform({ global: true, sourcemap: false }, 'uglifyify')
   b.bundle(done)
 }
