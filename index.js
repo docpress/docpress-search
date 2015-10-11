@@ -1,5 +1,7 @@
 'use strict'
 
+const join = require('path').join
+
 module.exports = function search () {
   return function search (files, ms, done) {
     let idx = {}
@@ -13,8 +15,11 @@ module.exports = function search () {
       file.searchIndex = idx
     })
 
-    files['search.js'] = { contents: '' }
-    done()
+    buildJs((err, contents) => {
+      if (err) return done(err)
+      files['search.js'] = { contents }
+      done()
+    })
   }
 }
 
@@ -55,4 +60,17 @@ function index (fname, file, idx) {
       }
     }
   })
+}
+
+/**
+ * Builds JS
+ */
+
+function buildJs (done) {
+  const fname = join(__dirname, 'data/search.js')
+  const browserify = require('browserify')
+  const b = browserify()
+  b.add(fname)
+  b.transform({ global: true }, 'uglifyify')
+  b.bundle(done)
 }
