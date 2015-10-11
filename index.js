@@ -71,6 +71,6 @@ function buildJs (done) {
   const browserify = require('browserify')
   const b = browserify()
   b.add(fname)
-  b.transform({ global: true, sourcemap: false }, 'uglifyify')
+  b.transform(require('uglifyify'), { global: true, sourcemap: false })
   b.bundle(done)
 }
