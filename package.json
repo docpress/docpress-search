@@ -3,14 +3,20 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "author": "Rico Sta. Cruz <rico@ricostacruz.com>",
   "license": "MIT",
   "dependencies": {
     "lunr": "0.5.12"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "expect": "1.12.1",
+    "mocha": "2.3.3",
+    "mocha-standard": "1.0.0",
+    "standard": "5.3.1",
+    "docpress-core": "*"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/docpress/docpress-search.git"
