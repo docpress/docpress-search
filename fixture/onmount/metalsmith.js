@@ -1,9 +1,10 @@
 /* istanbul ignore next */
 (function() {
-  var docpress = require('../../ms')
+  var docpress = require('docpress-core/ms')
 
   var app = docpress(__dirname)
-    .use(require('../../')())
+    .use(require('docpress-core')())
+    .use(require('../../index')())
 
   if (module.parent) {
     module.exports = app
