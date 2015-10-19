@@ -4,8 +4,9 @@ describe('index/with_base:', function () {
   before(function (done) {
     // Mock metalsmith object
     var ms = {
+      _meta: { docs: 'docs' },
       directory () { return __dirname },
-      metadata () { return { docs: 'docs' } }
+      metadata () { return this._meta }
     }
 
     this.files = {
@@ -45,7 +46,7 @@ describe('index/with_base:', function () {
     expect(this.files['assets/search.js']).toExist()
   })
 
-  xit('includes search.js', function () {
+  it('includes search.js', function () {
     var contents = this.files['index.html'].contents
     expect(contents).toMatch(/assets\/search.js\?t=[a-f0-9]{8}/)
   })
