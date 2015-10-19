@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
+    "prepublish": "npm run build",
+    "build": "mkdir -p cache && ./bin/build --js > cache/script.js",
     "test": "mocha"
   },
   "author": "Rico Sta. Cruz <rico@ricostacruz.com>",
