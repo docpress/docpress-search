@@ -1,7 +1,9 @@
 'use strict'
 
-const join = require('path').join
 const ware = require('ware')
+
+const useCache = require('./lib/helpers/use_cache')
+const buildJs = require('./lib/build_js')
 
 module.exports = function search (options) {
   const ctx = {}
@@ -41,7 +43,7 @@ function updateIndex (files, ms, done) {
  */
 
 function addJs (files, ms, done) {
-  buildJs((err, contents) => {
+  const callback = (err, contents) => {
     if (err) return done(err)
     contents =
       'window.__searchindex=(' +
@@ -52,7 +54,10 @@ function addJs (files, ms, done) {
       ')\n' + contents
     files['assets/search.js'] = { contents }
     done()
-  })
+  }
+
+  useCache('cache/search.js', callback) ||
+    buildJs(callback)
 }
 
 /**
@@ -130,18 +135,4 @@ function index (fname, file, idx) {
       body: ''
     }
   }
-}
-
-/**
- * Builds JS
- */
-
-function buildJs (done) {
-  const fname = join(__dirname, 'data/search.js')
-  const browserify = require('browserify')
-  const b = browserify()
-
-  b.add(fname)
-  b.transform(require('uglifyify'), { global: true, sourcemap: false })
-  b.bundle(done)
 }
