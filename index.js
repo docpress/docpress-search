@@ -13,14 +13,32 @@ module.exports = function search () {
 
     extendIndex(files['_docpress.json'], (file) => {
       file.searchIndex = idx
+      file.lunrIndex = JSON.stringify(lunrize(idx))
     })
 
     buildJs((err, contents) => {
       if (err) return done(err)
+      // TODO
+      contents = 'window.__searchindex=(' +
+        files['_docpress.json'].lunrIndex +
+        ')\n' + contents
       files['search.js'] = { contents }
       done()
     })
   }
+}
+
+function lunrize (idx) {
+  const lunr = require('lunr')
+  const index = lunr(function () {
+    this.field('title', { boost: 10 })
+    this.field('body')
+    this.ref('slug')
+  })
+  Object.keys(idx).forEach((slug) => {
+    index.add(idx[slug])
+  })
+  return index
 }
 
 /**
@@ -52,10 +70,10 @@ function index (fname, file, idx) {
       if (!idx[slug]) {
         idx[slug] = initial()
       } else {
-        if (idx[slug].text.length) {
-          idx[slug].text += '\n' + $this.text()
+        if (idx[slug].body.length) {
+          idx[slug].body += '\n' + $this.text()
         } else {
-          idx[slug].text = $this.text()
+          idx[slug].body = $this.text()
         }
       }
     }
@@ -66,7 +84,7 @@ function index (fname, file, idx) {
       title: title,
       pagetitle: file.title,
       slug: slug,
-      text: ''
+      body: ''
     }
   }
 }
@@ -79,10 +97,8 @@ function buildJs (done) {
   const fname = join(__dirname, 'data/search.js')
   const browserify = require('browserify')
   const b = browserify()
+
   b.add(fname)
   b.transform(require('uglifyify'), { global: true, sourcemap: false })
-  b.bundle((err, res) => {
-    if (err) done(err)
-    done(null, '/**/' + res)
-  })
+  b.bundle(done)
 }
