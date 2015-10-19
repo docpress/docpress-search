@@ -1,12 +1,11 @@
 const compile = require('../../')()
 
 describe('index/basic:', function () {
-  beforeEach(function (done) {
+  before(function (done) {
     // Mock metalsmith object
     var ms = {
-      metadata () {
-        return { docs: 'docs' }
-      }
+      directory () { return __dirname },
+      metadata () { return { docs: 'docs' } }
     }
 
     this.files = {
@@ -35,7 +34,7 @@ describe('index/basic:', function () {
     })
   })
 
-  beforeEach(function () {
+  before(function () {
     this.idx = this.files['_docpress.json'].searchIndex
     this.lunrIndex = this.files['_docpress.json'].lunrIndex
   })
@@ -68,7 +67,7 @@ describe('index/basic:', function () {
   })
 
   describe('lunr', function () {
-    beforeEach(function () {
+    before(function () {
       const lunr = require('lunr')
       this.lunr = lunr.Index.load(JSON.parse(this.lunrIndex))
     })
@@ -83,4 +82,16 @@ describe('index/basic:', function () {
       expect(results[0].ref).toEqual('index.html#usage')
     })
   })
+
+  // describe('search.js', function () {
+  //   beforeEach(function () {
+  //     global.window = {}
+  //     const code = this.files['assets/search.js'].contents
+  //     ;(new Function(code))()
+  //   })
+
+  //   it('works', function () {
+  //     console.log(global.window)
+  //   })
+  // })
 })

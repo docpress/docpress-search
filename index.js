@@ -1,36 +1,74 @@
 'use strict'
 
 const join = require('path').join
+const ware = require('ware')
 
-module.exports = function search () {
-  return function search (files, ms, done) {
-    let idx = {}
+module.exports = function search (options) {
+  const ctx = {}
 
-    Object.keys(files).forEach((fname) => {
-      const file = files[fname]
-      if (file.$) index(fname, file, idx)
-    })
+  var app = ware()
+    .use(updateIndex.bind(ctx))
+    .use(addMeta.bind(ctx))
+    .use(addJs.bind(ctx))
 
-    extendIndex(files['_docpress.json'], (file) => {
-      file.searchIndex = idx
-      file.lunrIndex = JSON.stringify(lunrize(idx))
-    })
-
-    buildJs((err, contents) => {
-      if (err) return done(err)
-      // TODO
-      contents =
-        'window.__searchindex=(' +
-        JSON.stringify(files['_docpress.json'].searchIndex) +
-        ')\n' +
-        'window.__lunrindex=(' +
-        files['_docpress.json'].lunrIndex +
-        ')\n' + contents
-      files['search.js'] = { contents }
-      done()
-    })
+  return function (files, ms, done) {
+    app.run(files, ms, done)
   }
 }
+
+/**
+ * Internal: actual indexing happens here
+ */
+
+function updateIndex (files, ms, done) {
+  let idx = {}
+
+  Object.keys(files).forEach((fname) => {
+    const file = files[fname]
+    if (file.$) index(fname, file, idx)
+  })
+
+  extendIndex(files['_docpress.json'], (file) => {
+    file.searchIndex = idx
+    file.lunrIndex = JSON.stringify(lunrize(idx))
+  })
+
+  done()
+}
+
+/**
+ * Internal: adds the search.js file
+ */
+
+function addJs (files, ms, done) {
+  buildJs((err, contents) => {
+    if (err) return done(err)
+    contents =
+      'window.__searchindex=(' +
+      JSON.stringify(files['_docpress.json'].searchIndex) +
+      ')\n' +
+      'window.__lunrindex=(' +
+      files['_docpress.json'].lunrIndex +
+      ')\n' + contents
+    files['assets/search.js'] = { contents }
+    done()
+  })
+}
+
+/**
+ * Internal: tells docpress-base to add search.js as a script
+ */
+
+function addMeta (files, ms, done) {
+  const meta = ms.metadata()
+  if (!meta.js) meta.js = []
+  meta.js.push('assets/search.js')
+  done()
+}
+
+/*
+ * Internal: turns the index into a lunr object
+ */
 
 function lunrize (idx) {
   const lunr = require('lunr')

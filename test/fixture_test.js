@@ -23,6 +23,6 @@ describe('fixture', function () {
   })
 
   it('creates search.js', function () {
-    expect(this.files['search.js']).toExist()
+    expect(this.files['assets/search.js']).toExist()
   })
 })
