@@ -1,1 +1,3 @@
+--require mocha-clean/brief
 --require test/setup
+--recursive

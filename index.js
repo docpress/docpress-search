@@ -47,19 +47,28 @@ function index (fname, file, idx) {
     if ($this.is('h2, h3, h4, h5, h6')) {
       slug = fname + '#' + $this.attr('id')
       title = $this.text()
+      idx[slug] = initial()
     } else {
       if (!idx[slug]) {
-        idx[slug] = {
-          title: title,
-          pagetitle: file.title,
-          slug: slug,
-          text: ''
-        }
+        idx[slug] = initial()
       } else {
-        idx[slug].text += ' ' + $this.text()
+        if (idx[slug].text.length) {
+          idx[slug].text += '\n' + $this.text()
+        } else {
+          idx[slug].text = $this.text()
+        }
       }
     }
   })
+
+  function initial () {
+    return {
+      title: title,
+      pagetitle: file.title,
+      slug: slug,
+      text: ''
+    }
+  }
 }
 
 /**
@@ -72,5 +81,8 @@ function buildJs (done) {
   const b = browserify()
   b.add(fname)
   b.transform(require('uglifyify'), { global: true, sourcemap: false })
-  b.bundle(done)
+  b.bundle((err, res) => {
+    if (err) done(err)
+    done(null, '/**/' + res)
+  })
 }
