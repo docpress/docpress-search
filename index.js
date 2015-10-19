@@ -19,7 +19,11 @@ module.exports = function search () {
     buildJs((err, contents) => {
       if (err) return done(err)
       // TODO
-      contents = 'window.__searchindex=(' +
+      contents =
+        'window.__searchindex=(' +
+        JSON.stringify(files['_docpress.json'].searchIndex) +
+        ')\n' +
+        'window.__lunrindex=(' +
         files['_docpress.json'].lunrIndex +
         ')\n' + contents
       files['search.js'] = { contents }
