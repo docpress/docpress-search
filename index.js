@@ -1,9 +1,11 @@
 'use strict'
 
 const ware = require('ware')
+const assign = Object.assign
 
 const useCache = require('./lib/helpers/use_cache')
 const buildJs = require('./lib/build_js')
+const memoize = require('./lib/memoize')
 
 module.exports = function search (options) {
   const ctx = {}
@@ -23,23 +25,32 @@ module.exports = function search (options) {
  */
 
 function updateIndex (files, ms, done) {
-  let idx = {}
+  const idx = {}
 
   Object.keys(files).forEach((fname) => {
     const file = files[fname]
-    if (file.$) index(fname, file, idx)
+    // memoize based on file contents
+    if (file.$) {
+      const cacheKey = [ ms.directory(), fname, file.contents ]
+      const newIndices = memoize(['index', cacheKey], () => {
+        return index(fname, file)
+      })
+      assign(idx, newIndices)
+    }
   })
 
   extendIndex(files['_docpress.json'], (file) => {
     file.searchIndex = idx
-    file.lunrIndex = JSON.stringify(lunrize(idx))
+    file.lunrIndex = memoize([ 'lunr', ms.directory(), idx ], () => {
+      return JSON.stringify(lunrize(idx))
+    })
   })
 
   done()
 }
 
 /**
- * Internal: adds the search.js file
+  Internal: adds the search.js file
  */
 
 function addJs (files, ms, done) {
@@ -104,9 +115,10 @@ function extendIndex (file, block) {
  * Internal: adds new indexes to `idx` from the file `file`/`fname`.
  */
 
-function index (fname, file, idx) {
+function index (fname, file) {
   let slug = fname
   let title = file.title
+  let idx = {}
 
   file.$(':root').each(function () {
     const $this = file.$(this)
@@ -126,6 +138,8 @@ function index (fname, file, idx) {
       }
     }
   })
+
+  return idx
 
   function initial () {
     return {
