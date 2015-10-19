@@ -68,7 +68,7 @@ function addJs (files, ms, done) {
   }
 
   useCache('cache/search.js', callback) ||
-    buildJs(callback)
+    buildJs({}, callback)
 }
 
 /**
@@ -78,7 +78,9 @@ function addJs (files, ms, done) {
 function addMeta (files, ms, done) {
   const meta = ms.metadata()
   if (!meta.js) meta.js = []
-  meta.js.push('assets/search.js')
+  if (meta.js.indexOf('assets/search.js') === -1) {
+    meta.js.push('assets/search.js')
+  }
   done()
 }
 
