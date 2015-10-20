@@ -92,6 +92,7 @@ function lunrize (idx) {
   const lunr = require('lunr')
   const index = lunr(function () {
     this.field('title', { boost: 10 })
+    // todo: boost if heading
     this.field('pagetitle', { boost: 3 })
     this.field('body')
     this.ref('slug')

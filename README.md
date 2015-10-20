@@ -20,3 +20,8 @@ It takes them from all `.html` files (which `docpress-core` converted from Markd
 It also updates `ms.metadata()` to add `assets/search.js` to the `js` list.
 
 It is meant to be used alongside `docpress-core` and `docpress-base`.
+
+The frontend provides these available in the browser:
+
+* `Search.search('keyword')` - searches pages and headings
+* `Search.pages` - an index of all pages and headings
