@@ -58,11 +58,11 @@ function addJs (files, ms, done) {
     if (err) return done(err)
     contents =
       'window.__searchindex=(' +
-      JSON.stringify(files['_docpress.json'].searchIndex) +
-      ')\n' +
+      JSON.stringify(files['_docpress.json'].searchIndex, null, 2) +
+      ');\n' +
       'window.__lunrindex=(' +
       files['_docpress.json'].lunrIndex +
-      ')\n' + contents
+      ');\n' + contents
     files['assets/search.js'] = { contents }
     done()
   }
@@ -110,7 +110,7 @@ function lunrize (idx) {
 function extendIndex (file, block) {
   delete file.contents
   block(file)
-  file.contents = JSON.stringify(file, null, 2)
+  file.contents = JSON.stringify(file)
 }
 
 /**
