@@ -12,7 +12,7 @@
   "dependencies": {
     "browserify": "11.2.0",
     "lunr": "0.5.12",
-    "uglifyify": "3.0.1",
+    "uglifyify": "3.0.3",
     "ware": "1.3.0"
   },
   "devDependencies": {
